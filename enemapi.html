@@ -466,23 +466,8 @@
         populateYears();
         updateStats();
         
-        // Renderiza a questão de exemplo ao carregar a página
-        const mockQuestionData = {
-            "index": 123,
-            "year": 2023,
-            "discipline": "ciencias-natureza",
-            "context": "Entre os medicamentos mais comuns consumidos para o alívio da dor está o ibuprofeno...",
-            "correctAlternative": "E",
-            "alternativesIntroduction": "O princípio ativo que apresenta o mesmo tipo de isomeria espacial que o ibuprofeno é o(a)",
-            "alternatives": [
-                { "letter": "A", "text": "Fenacetina." },
-                { "letter": "B", "text": "Paracetamol." },
-                { "letter": "C", "text": "Dipirona sódica." },
-                { "letter": "D", "text": "Diclofenaco sódico." },
-                { "letter": "E", "text": "Butilbrometo de escopolamina." }
-            ]
-        };
-        renderQuestion(mockQuestionData);
+        // Removemos a renderização automática da questão de exemplo para não confundir o usuário
+        // renderQuestion(mockQuestionData);
 
         function escolherNumero(opcao) {
             switch (opcao) {
