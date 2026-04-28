@@ -119,15 +119,54 @@
             </div>
 
             <!-- Botão e Resposta -->
-            <div class="space-y-3 text-center">
+            <div class="space-y-4 text-center">
                 <button id="show-answer-btn" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-5 rounded-lg shadow-md transition duration-300">
                     Mostrar Resposta
                 </button>
                 <div id="answer-display" class="hidden text-center p-3 bg-green-100 rounded-lg">
                     <span class="font-bold text-green-800 text-lg">Resposta Correta: <span id="correct-answer-span"></span></span>
                 </div>
+
+                <!-- Feedback do Usuário -->
+                <div id="feedback-container" class="hidden flex flex-col items-center space-y-3 pt-4 border-t">
+                    <p class="text-sm font-semibold text-gray-600">Você acertou esta questão?</p>
+                    <div class="flex gap-4">
+                        <button id="mark-correct-btn" class="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-xl shadow-lg transition-all active:scale-95">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                            </svg>
+                            Correto
+                        </button>
+                        <button id="mark-incorrect-btn" class="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-xl shadow-lg transition-all active:scale-95">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                            Incorreto
+                        </button>
+                    </div>
+                    <p id="save-status" class="text-xs text-green-600 font-medium opacity-0 transition-opacity">Progresso salvo!</p>
+                </div>
             </div>
 
+        </div>
+
+        <!-- Mini Estatísticas -->
+        <div class="mt-8 p-4 bg-gray-50 rounded-xl border border-gray-200">
+            <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Seu Progresso Geral</h3>
+            <div class="flex justify-around text-center">
+                <div>
+                    <span id="stats-total" class="block text-2xl font-bold text-blue-600">0</span>
+                    <span class="text-xs text-gray-500">Resolvidas</span>
+                </div>
+                <div>
+                    <span id="stats-correct" class="block text-2xl font-bold text-green-600">0</span>
+                    <span class="text-xs text-gray-500">Acertos</span>
+                </div>
+                <div>
+                    <span id="stats-incorrect" class="block text-2xl font-bold text-red-600">0</span>
+                    <span class="text-xs text-gray-500">Erros</span>
+                </div>
+            </div>
         </div>
 
     </div>
@@ -141,8 +180,9 @@
             'matematica': 'Matemática'
         };
 
-        // --- Armazenamento da Resposta ---
+        // --- Estado Global ---
         let currentCorrectAnswer = null;
+        let currentQuestionData = null;
 
         // --- Seletores da UI de Busca ---
         const yearSelect = document.getElementById('year-select');
@@ -165,6 +205,15 @@
         const showAnswerBtn = document.getElementById('show-answer-btn');
         const answerDisplay = document.getElementById('answer-display');
         const correctAnswerSpan = document.getElementById('correct-answer-span');
+
+        // --- Seletores de Feedback e Stats ---
+        const feedbackContainer = document.getElementById('feedback-container');
+        const markCorrectBtn = document.getElementById('mark-correct-btn');
+        const markIncorrectBtn = document.getElementById('mark-incorrect-btn');
+        const saveStatus = document.getElementById('save-status');
+        const statsTotal = document.getElementById('stats-total');
+        const statsCorrect = document.getElementById('stats-correct');
+        const statsIncorrect = document.getElementById('stats-incorrect');
 
         // --- Funções Auxiliares ---
 
@@ -206,9 +255,12 @@
             loadingIndicator.classList.add('hidden');
             
             answerDisplay.classList.add('hidden');
+            feedbackContainer.classList.add('hidden');
+            saveStatus.classList.add('opacity-0');
             optionsList.innerHTML = '';
             questionContext.innerHTML = '';
             currentCorrectAnswer = null;
+            currentQuestionData = null;
 
             // Reseta destaques de resposta anterior
             document.querySelectorAll('[data-letter]').forEach(el => {
@@ -236,6 +288,50 @@
             return html;
         }
 
+        // --- LÓGICA DE LOCALSTORAGE ---
+
+        /**
+         * Carrega e exibe as estatísticas do localStorage.
+         */
+        function updateStats() {
+            const history = JSON.parse(localStorage.getItem('enem_history') || '[]');
+            const correct = history.filter(q => q.isCorrect).length;
+            const incorrect = history.length - correct;
+            
+            statsTotal.textContent = history.length;
+            statsCorrect.textContent = correct;
+            statsIncorrect.textContent = incorrect;
+        }
+
+        /**
+         * Salva o resultado da questão no localStorage.
+         */
+        function saveProgress(isCorrect) {
+            if (!currentQuestionData) return;
+
+            const history = JSON.parse(localStorage.getItem('enem_history') || '[]');
+            const questionId = `${currentQuestionData.year}-${currentQuestionData.index}`;
+            
+            // Remove duplicata se já existir para este ID
+            const filteredHistory = history.filter(q => q.id !== questionId);
+            
+            const record = {
+                id: questionId,
+                year: currentQuestionData.year,
+                area: currentQuestionData.discipline,
+                isCorrect: isCorrect,
+                timestamp: new Date().toISOString()
+            };
+
+            filteredHistory.push(record);
+            localStorage.setItem('enem_history', JSON.stringify(filteredHistory));
+            
+            // UI Feedback
+            saveStatus.classList.remove('opacity-0');
+            setTimeout(() => saveStatus.classList.add('opacity-0'), 2000);
+            updateStats();
+        }
+
         // ===============================================
         // ===== FUNÇÃO PRINCIPAL: RENDERIZADOR ========
         // ===============================================
@@ -246,7 +342,8 @@
         window.renderQuestion = (questionData) => {
             resetResultUI();
 
-            // Armazena a resposta correta
+            // Armazena o estado atual
+            currentQuestionData = questionData;
             currentCorrectAnswer = questionData.correctAlternative;
 
             // 1. Preenche o Cabeçalho
@@ -275,7 +372,7 @@
             optionsList.innerHTML = ''; // Limpa de novo por segurança
             questionData.alternatives.forEach(alt => {
                 const optionElement = document.createElement('div');
-                optionElement.className = 'border p-3 rounded-lg text-gray-700 transition duration-200';
+                optionElement.className = 'border p-3 rounded-lg text-gray-700 transition duration-200 cursor-pointer hover:bg-gray-50';
                 optionElement.setAttribute('data-letter', alt.letter);
                 
                 let optionHTML = `
@@ -304,6 +401,7 @@
 
             correctAnswerSpan.textContent = currentCorrectAnswer;
             answerDisplay.classList.remove('hidden');
+            feedbackContainer.classList.remove('hidden');
 
             // Remove destaques antigos
             document.querySelectorAll('[data-letter]').forEach(el => {
@@ -324,85 +422,87 @@
         randomBtn.addEventListener('click', () => {
             const year = yearSelect.value;
             const area = areaSelect.value;
-            console.log('MOCK - Buscar Aleatória:', { year, area });
-            showError('Lógica de busca aleatória não implementada. (Veja o console)');
+            if (!year) {
+                showError('Por favor, selecione um ano primeiro.');
+                return;
+            }
+            loadingIndicator.classList.remove('hidden');
             resetResultUI();
             pickQuestion(year, area).then(data => {
-                window.renderQuestion(data)
-            })
+                window.renderQuestion(data);
+            }).catch(err => {
+                showError('Erro ao buscar questão. Tente novamente.');
+                loadingIndicator.classList.add('hidden');
+            });
         });
 
         specificBtn.addEventListener('click', () => {
             const year = yearSelect.value;
             const index = indexInput.value;
-            console.log('MOCK - Buscar Específica:', { year, index });
-            showError('Lógica de busca específica não implementada. (Veja o console)');
+            if (!year || !index) {
+                showError('Por favor, informe o ano e o número da questão.');
+                return;
+            }
+            loadingIndicator.classList.remove('hidden');
             resetResultUI();
+            
+            fetch(`http://api.enem.dev/v1/exams/${year}/questions/${index}`)
+                .then(res => res.json())
+                .then(data => {
+                    window.renderQuestion(data);
+                })
+                .catch(err => {
+                    showError('Questão não encontrada ou erro na API.');
+                    loadingIndicator.classList.add('hidden');
+                });
         });
 
-        // Listener do botão de resposta
+        // Listeners do feedback
         showAnswerBtn.addEventListener('click', showAnswer);
+        markCorrectBtn.addEventListener('click', () => saveProgress(true));
+        markIncorrectBtn.addEventListener('click', () => saveProgress(false));
 
-        // --- DADOS DE EXEMPLO (PARA DEMONSTRAR O RENDERIZADOR) ---
+        // Popula os anos no select e carrega stats iniciais
+        populateYears();
+        updateStats();
+        
+        // Renderiza a questão de exemplo ao carregar a página
         const mockQuestionData = {
-            "title": "Questão 123 - ENEM 2023",
             "index": 123,
             "year": 2023,
-            "language": null,
             "discipline": "ciencias-natureza",
-            "context": "Entre os medicamentos mais comuns consumidos para o alívio da dor está o ibuprofeno, um composto quiral com ação anti-inflamatória e efeito analgésico, que é comercializado como fármaco opticamente puro, ou seja, sem a mistura com outro isômero óptico. A fórmula estrutural plana do ibuprofeno é:\n\n![](https://enem.dev/2023/questions/123/045ed5ac-600f-4d71-bc55-63a2f2804c13.png)\n\nAlém do ibuprofeno, destacam-se também os princípios ativos a seguir, presentes em outros medicamentos para o alívio da dor:\n\n![](https://enem.dev/2023/questions/123/5b164bb7-d865-44cf-820a-1dc266d8effe.jpg)",
-            "files": [
-                "https://enem.dev/2023/questions/123/045ed5ac-600f-4d71-bc55-63a2f2804c13.png",
-                "https://enem.dev/2023/questions/123/5b164bb7-d865-44cf-820a-1dc266d8effe.jpg"
-            ],
+            "context": "Entre os medicamentos mais comuns consumidos para o alívio da dor está o ibuprofeno...",
             "correctAlternative": "E",
             "alternativesIntroduction": "O princípio ativo que apresenta o mesmo tipo de isomeria espacial que o ibuprofeno é o(a)",
             "alternatives": [
-                { "letter": "A", "text": "Fenacetina.", "file": null, "isCorrect": false },
-                { "letter": "B", "text": "Paracetamol.", "file": null, "isCorrect": false },
-                { "letter": "C", "text": "Dipirona sódica.", "file": null, "isCorrect": false },
-                { "letter": "D", "text": "Diclofenaco sódico.", "file": null, "isCorrect": false },
-                { "letter": "E", "text": "Butilbrometo de escopolamina.", "file": null, "isCorrect": true }
+                { "letter": "A", "text": "Fenacetina." },
+                { "letter": "B", "text": "Paracetamol." },
+                { "letter": "C", "text": "Dipirona sódica." },
+                { "letter": "D", "text": "Diclofenaco sódico." },
+                { "letter": "E", "text": "Butilbrometo de escopolamina." }
             ]
         };
-
-        // Popula os anos no select
-        populateYears();
-        
-        // Renderiza a questão de exemplo ao carregar a página
         renderQuestion(mockQuestionData);
 
         function escolherNumero(opcao) {
-        switch (opcao) {
-            case "": // 1 a 180
-                return Math.floor(Math.random() * 180) + 1;
-
-            case "linguagens": // 1 a 45
-                return Math.floor(Math.random() * 45) + 1;
-
-            case "ciencias-humanas": // 46 a 90
-                return Math.floor(Math.random() * 45) + 46;
-
-            case "ciencias-natureza": // 91 a 135
-                return Math.floor(Math.random() * 45) + 91;
-
-            case "matematica": // 136 a 180
-                return Math.floor(Math.random() * 45) + 136;
-
-            default:
-                throw new Error("Opção inválida. Use uma das 5 strings esperadas.");
+            switch (opcao) {
+                case "": return Math.floor(Math.random() * 180) + 1;
+                case "linguagens": return Math.floor(Math.random() * 45) + 1;
+                case "ciencias-humanas": return Math.floor(Math.random() * 45) + 46;
+                case "ciencias-natureza": return Math.floor(Math.random() * 45) + 91;
+                case "matematica": return Math.floor(Math.random() * 45) + 136;
+                default: return Math.floor(Math.random() * 180) + 1;
+            }
         }
-}
-
 
         async function pickQuestion(year, area){
-            let index = escolherNumero(area)
-            let res = await fetch(`http://api.enem.dev/v1/exams/${year}/questions/${index}`)
-            res = await res.json()
-            return res
+            let index = escolherNumero(area);
+            let res = await fetch(`http://api.enem.dev/v1/exams/${year}/questions/${index}`);
+            return await res.json();
         }
 
     </script>
+
 
 </body>
 </html>
