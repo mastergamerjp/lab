@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Experimental Projects Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 to-slate-800 min-h-screen text-white font-sans selection:bg-blue-500 selection:text-white">
+
+    <div class="container mx-auto px-4 py-12 max-w-5xl">
+        <!-- Header -->
+        <header class="mb-16 text-center">
+            <h1 class="text-5xl font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">
+                Labs & Experiments
+            </h1>
+            <p class="text-slate-400 text-lg max-w-2xl mx-auto">
+                A collection of experimental web projects, tools, and prototypes.
+            </p>
+        </header>
+
+        <!-- Projects Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            <!-- Project Card: ENEM API -->
+            <a href="enemapi.html" class="group block p-6 rounded-2xl glass hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-500/20">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="p-3 bg-blue-500/20 rounded-xl group-hover:bg-blue-500/30 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5S19.832 5.477 21 6.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                    </div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-blue-400 px-2 py-1 bg-blue-500/10 rounded-full">Web App</span>
+                </div>
+                <h3 class="text-xl font-bold mb-2 group-hover:text-blue-400 transition-colors">ENEM API Explorer</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">
+                    Interactive tool to consume the enem.dev API, helping students study by solving historical questions.
+                </p>
+                <div class="mt-6 flex items-center text-sm font-semibold text-blue-400">
+                    Launch Project
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                </div>
+            </a>
+
+            <!-- Placeholder for future projects -->
+            <div class="p-6 rounded-2xl border-2 border-dashed border-slate-700 flex flex-col items-center justify-center text-center opacity-50">
+                <div class="p-3 bg-slate-700/50 rounded-xl mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-slate-500 italic">Next Experiment Coming Soon...</h3>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-24 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>&copy; 2026 Labs Hub. Built in Termux.</p>
+        </footer>
+    </div>
+
+</body>
+</html>
