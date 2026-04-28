@@ -446,7 +446,7 @@
             loadingIndicator.classList.remove('hidden');
             resetResultUI();
             
-            fetch(`http://api.enem.dev/v1/exams/${year}/questions/${index}`)
+            fetch(`https://api.enem.dev/v1/exams/${year}/questions/${index}`)
                 .then(res => res.json())
                 .then(data => {
                     window.renderQuestion(data);
@@ -482,7 +482,7 @@
 
         async function pickQuestion(year, area){
             let index = escolherNumero(area);
-            let res = await fetch(`http://api.enem.dev/v1/exams/${year}/questions/${index}`);
+            let res = await fetch(`https://api.enem.dev/v1/exams/${year}/questions/${index}`);
             return await res.json();
         }
 
