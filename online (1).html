@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Renderizador de Questões ENEM</title>
+    <!-- Carrega o Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Animação simples de carregamento (spinner) */
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, .1);
+            border-left-color: #3b82f6; /* azul-500 */
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4 font-sans">
+
+    <div class="bg-white w-full max-w-3xl p-6 sm:p-8 rounded-2xl shadow-xl space-y-6">
+        
+        <h1 class="text-3xl font-bold text-center text-blue-600">
+            Buscador de Questões ENEM
+        </h1>
+
+        <!-- Seção de Busca (Mockup) -->
+        <div class="space-y-4 p-4 border border-gray-200 rounded-lg">
+            <h2 class="text-xl font-semibold text-gray-700">Buscar Questão</h2>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Filtro de Ano -->
+                <div>
+                    <label for="year-select" class="block text-sm font-medium text-gray-600 mb-1">Ano</label>
+                    <select id="year-select" class="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Selecione o Ano</option>
+                        <!-- Os anos serão preenchidos via JS -->
+                    </select>
+                </div>
+                <!-- Filtro de Área -->
+                <div>
+                    <label for="area-select" class="block text-sm font-medium text-gray-600 mb-1">Área do Conhecimento</label>
+                    <select id="area-select" class="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Qualquer Área</option>
+                        <option value="linguagens">Linguagens e Códigos</option>
+                        <option value="ciencias-humanas">Ciências Humanas</option>
+                        <option value="ciencias-natureza">Ciências da Natureza</option>
+                        <option value="matematica">Matemática</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Botão Aleatório -->
+            <button id="random-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300">
+                Buscar Questão Aleatória (Ano + Área)
+            </button>
+            
+            <hr class="my-2 border-gray-200">
+
+            <!-- Busca Específica -->
+            <div class="flex flex-col sm:flex-row gap-3">
+                <input type="number" id="index-input" placeholder="Número da Questão (ex: 136)" class="flex-grow p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                <button id="specific-btn" class="sm:w-auto bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300">
+                    Buscar (Ano + Número)
+                </button>
+            </div>
+        </div>
+
+        <!-- Indicador de Carregamento (Mockup) -->
+        <div id="loading-indicator" class="hidden flex flex-col items-center justify-center p-6 space-y-2">
+            <div class="spinner"></div>
+            <span class="text-gray-600">Buscando questão...</span>
+        </div>
+
+        <!-- Mensagem de Erro (Mockup) -->
+        <div id="error-message" class="hidden text-center text-red-600 font-semibold bg-red-100 p-3 rounded-lg">
+            <!-- Mensagem de erro aparecerá aqui -->
+        </div>
+
+        <!-- ============================================= -->
+        <!-- ===== CONTAINER DE RENDERIZAÇÃO DA QUESTÃO ==== -->
+        <!-- ============================================= -->
+        <div id="result-container" class="hidden space-y-5 border-t pt-6">
+            
+            <!-- Cabeçalho da Questão -->
+            <div class="flex flex-wrap gap-x-4 gap-y-2 justify-between items-center bg-gray-50 p-3 rounded-lg">
+                <span class="font-bold text-lg text-blue-700">Questão (Índice): <span id="question-index"></span></span>
+                <div class="flex gap-x-4">
+                    <span class="text-sm font-medium text-gray-600">Ano: <span id="question-year" class="font-semibold text-gray-800"></span></span>
+                    <span class="text-sm font-medium text-gray-600">Área: <span id="question-area" class="font-semibold text-gray-800"></span></span>
+                </div>
+            </div>
+
+            <!-- Contexto (Texto de Apoio + Imagens) -->
+            <div id="question-context" class="p-4 bg-gray-100 rounded-lg shadow-inner space-y-4">
+                <!-- O conteúdo do 'context' (texto e imagens) será injetado aqui -->
+            </div>
+
+            <!-- Enunciado (Introdução às Alternativas) -->
+            <div id="question-enunciado-div" class="hidden">
+                <h3 class="font-semibold text-gray-700 mb-2">Enunciado:</h3>
+                <p id="question-enunciado-content" class="text-gray-800 text-lg"></p>
+            </div>
+
+            <!-- Alternativas -->
+            <div class="space-y-3">
+                <h3 class="font-semibold text-gray-700">Alternativas:</h3>
+                <div id="options-list" class="space-y-2">
+                    <!-- Alternativas serão injetadas aqui -->
+                </div>
+            </div>
+
+            <!-- Botão e Resposta -->
+            <div class="space-y-3 text-center">
+                <button id="show-answer-btn" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-5 rounded-lg shadow-md transition duration-300">
+                    Mostrar Resposta
+                </button>
+                <div id="answer-display" class="hidden text-center p-3 bg-green-100 rounded-lg">
+                    <span class="font-bold text-green-800 text-lg">Resposta Correta: <span id="correct-answer-span"></span></span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script type="module">
+        // --- Mapeamento de Nomes (Chave da API -> Nome Amigável) ---
+        const AREA_MAP = {
+            'ciencias-natureza': 'Ciências da Natureza',
+            'ciencias-humanas': 'Ciências Humanas',
+            'linguagens': 'Linguagens e Códigos',
+            'matematica': 'Matemática'
+        };
+
+        // --- Armazenamento da Resposta ---
+        let currentCorrectAnswer = null;
+
+        // --- Seletores da UI de Busca ---
+        const yearSelect = document.getElementById('year-select');
+        const areaSelect = document.getElementById('area-select');
+        const indexInput = document.getElementById('index-input');
+        const randomBtn = document.getElementById('random-btn');
+        const specificBtn = document.getElementById('specific-btn');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const errorMessage = document.getElementById('error-message');
+
+        // --- Seletores do Renderizador ---
+        const resultContainer = document.getElementById('result-container');
+        const questionIndex = document.getElementById('question-index');
+        const questionYear = document.getElementById('question-year');
+        const questionArea = document.getElementById('question-area');
+        const questionContext = document.getElementById('question-context');
+        const questionEnunciadoDiv = document.getElementById('question-enunciado-div');
+        const questionEnunciadoContent = document.getElementById('question-enunciado-content');
+        const optionsList = document.getElementById('options-list');
+        const showAnswerBtn = document.getElementById('show-answer-btn');
+        const answerDisplay = document.getElementById('answer-display');
+        const correctAnswerSpan = document.getElementById('correct-answer-span');
+
+        // --- Funções Auxiliares ---
+
+        /**
+         * Popula o dropdown de anos de 2009 até 2023.
+         */
+        function populateYears() {
+            const currentYear = 2023; // Último ano da API
+            const startYear = 2009;
+            for (let year = currentYear; year >= startYear; year--) {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                yearSelect.appendChild(option);
+            }
+        }
+
+        /**
+         * Formata a chave da disciplina para o nome completo.
+         */
+        function formatArea(disciplineKey) {
+            return AREA_MAP[disciplineKey] || disciplineKey;
+        }
+
+        /**
+         * Exibe uma mensagem de erro (usada pelos botões mock).
+         */
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.remove('hidden');
+        }
+
+        /**
+         * Reseta a interface de resultado antes de uma nova renderização.
+         */
+        function resetResultUI() {
+            resultContainer.classList.add('hidden');
+            errorMessage.classList.add('hidden');
+            loadingIndicator.classList.add('hidden');
+            
+            answerDisplay.classList.add('hidden');
+            optionsList.innerHTML = '';
+            questionContext.innerHTML = '';
+            currentCorrectAnswer = null;
+
+            // Reseta destaques de resposta anterior
+            document.querySelectorAll('[data-letter]').forEach(el => {
+                el.classList.remove('bg-green-200', 'font-bold');
+            });
+        }
+
+        /**
+         * Converte o 'context' (que usa markdown de imagem) em HTML.
+         */
+        function parseContext(contextString) {
+            if (!contextString) {
+                return '';
+            }
+            // 1. Substitui ![] (url) por <img ...>
+            const imgRegex = /!\[.*?\]\((.*?)\)/g;
+            let html = contextString.replace(
+                imgRegex, 
+                '<img src="$1" alt="Imagem de contexto" class="w-full max-w-md mx-auto rounded-lg shadow-sm border my-4">'
+            );
+            
+            // 2. Substitui quebras de linha \n por <br>
+            html = html.replace(/\n/g, '<br>');
+            
+            return html;
+        }
+
+        // ===============================================
+        // ===== FUNÇÃO PRINCIPAL: RENDERIZADOR ========
+        // ===============================================
+        /**
+         * Renderiza uma questão na tela com base no objeto JSON fornecido.
+         * @param {object} questionData - O objeto da questão.
+         */
+        window.renderQuestion = (questionData) => {
+            resetResultUI();
+
+            // Armazena a resposta correta
+            currentCorrectAnswer = questionData.correctAlternative;
+
+            // 1. Preenche o Cabeçalho
+            questionIndex.textContent = questionData.index;
+            questionYear.textContent = questionData.year;
+            questionArea.textContent = formatArea(questionData.discipline);
+
+            // 2. Renderiza o Contexto (Texto de apoio e Imagens)
+            const contextHtml = parseContext(questionData.context);
+            if (contextHtml) {
+                questionContext.innerHTML = contextHtml;
+                questionContext.classList.remove('hidden');
+            } else {
+                questionContext.classList.add('hidden');
+            }
+
+            // 3. Renderiza o Enunciado (alternativesIntroduction)
+            if (questionData.alternativesIntroduction) {
+                questionEnunciadoContent.textContent = questionData.alternativesIntroduction;
+                questionEnunciadoDiv.classList.remove('hidden');
+            } else {
+                questionEnunciadoDiv.classList.add('hidden');
+            }
+
+            // 4. Renderiza as Alternativas
+            optionsList.innerHTML = ''; // Limpa de novo por segurança
+            questionData.alternatives.forEach(alt => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'border p-3 rounded-lg text-gray-700 transition duration-200';
+                optionElement.setAttribute('data-letter', alt.letter);
+                
+                let optionHTML = `
+                    <span class="font-bold mr-2">${alt.letter})</span>
+                    <span>${alt.text}</span>
+                `;
+                
+                // Adiciona imagem da alternativa, se houver
+                if (alt.file) {
+                    optionHTML += `<img src="${alt.file}" alt="Imagem da alternativa ${alt.letter}" class="w-full max-w-sm mx-auto rounded-lg shadow-sm border mt-2">`;
+                }
+                
+                optionElement.innerHTML = optionHTML;
+                optionsList.appendChild(optionElement);
+            });
+
+            // Exibe o container de resultado
+            resultContainer.classList.remove('hidden');
+        }
+
+        /**
+         * Mostra a resposta correta e destaca a alternativa.
+         */
+        function showAnswer() {
+            if (!currentCorrectAnswer) return;
+
+            correctAnswerSpan.textContent = currentCorrectAnswer;
+            answerDisplay.classList.remove('hidden');
+
+            // Remove destaques antigos
+            document.querySelectorAll('[data-letter]').forEach(el => {
+                el.classList.remove('bg-green-200', 'font-bold');
+            });
+
+            // Adiciona destaque na correta
+            const correctEl = document.querySelector(`[data-letter="${currentCorrectAnswer}"]`);
+            if (correctEl) {
+                correctEl.classList.add('bg-green-200', 'font-bold');
+                correctEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        // --- INICIALIZAÇÃO E MOCKUPS ---
+
+        // Mockups dos botões de busca (NÃO FAZEM FETCH)
+        randomBtn.addEventListener('click', () => {
+            const year = yearSelect.value;
+            const area = areaSelect.value;
+            console.log('MOCK - Buscar Aleatória:', { year, area });
+            showError('Lógica de busca aleatória não implementada. (Veja o console)');
+            resetResultUI();
+            pickQuestion(year, area).then(data => {
+                window.renderQuestion(data)
+            })
+        });
+
+        specificBtn.addEventListener('click', () => {
+            const year = yearSelect.value;
+            const index = indexInput.value;
+            console.log('MOCK - Buscar Específica:', { year, index });
+            showError('Lógica de busca específica não implementada. (Veja o console)');
+            resetResultUI();
+        });
+
+        // Listener do botão de resposta
+        showAnswerBtn.addEventListener('click', showAnswer);
+
+        // --- DADOS DE EXEMPLO (PARA DEMONSTRAR O RENDERIZADOR) ---
+        const mockQuestionData = {
+            "title": "Questão 123 - ENEM 2023",
+            "index": 123,
+            "year": 2023,
+            "language": null,
+            "discipline": "ciencias-natureza",
+            "context": "Entre os medicamentos mais comuns consumidos para o alívio da dor está o ibuprofeno, um composto quiral com ação anti-inflamatória e efeito analgésico, que é comercializado como fármaco opticamente puro, ou seja, sem a mistura com outro isômero óptico. A fórmula estrutural plana do ibuprofeno é:\n\n![](https://enem.dev/2023/questions/123/045ed5ac-600f-4d71-bc55-63a2f2804c13.png)\n\nAlém do ibuprofeno, destacam-se também os princípios ativos a seguir, presentes em outros medicamentos para o alívio da dor:\n\n![](https://enem.dev/2023/questions/123/5b164bb7-d865-44cf-820a-1dc266d8effe.jpg)",
+            "files": [
+                "https://enem.dev/2023/questions/123/045ed5ac-600f-4d71-bc55-63a2f2804c13.png",
+                "https://enem.dev/2023/questions/123/5b164bb7-d865-44cf-820a-1dc266d8effe.jpg"
+            ],
+            "correctAlternative": "E",
+            "alternativesIntroduction": "O princípio ativo que apresenta o mesmo tipo de isomeria espacial que o ibuprofeno é o(a)",
+            "alternatives": [
+                { "letter": "A", "text": "Fenacetina.", "file": null, "isCorrect": false },
+                { "letter": "B", "text": "Paracetamol.", "file": null, "isCorrect": false },
+                { "letter": "C", "text": "Dipirona sódica.", "file": null, "isCorrect": false },
+                { "letter": "D", "text": "Diclofenaco sódico.", "file": null, "isCorrect": false },
+                { "letter": "E", "text": "Butilbrometo de escopolamina.", "file": null, "isCorrect": true }
+            ]
+        };
+
+        // Popula os anos no select
+        populateYears();
+        
+        // Renderiza a questão de exemplo ao carregar a página
+        renderQuestion(mockQuestionData);
+
+        function escolherNumero(opcao) {
+        switch (opcao) {
+            case "": // 1 a 180
+                return Math.floor(Math.random() * 180) + 1;
+
+            case "linguagens": // 1 a 45
+                return Math.floor(Math.random() * 45) + 1;
+
+            case "ciencias-humanas": // 46 a 90
+                return Math.floor(Math.random() * 45) + 46;
+
+            case "ciencias-natureza": // 91 a 135
+                return Math.floor(Math.random() * 45) + 91;
+
+            case "matematica": // 136 a 180
+                return Math.floor(Math.random() * 45) + 136;
+
+            default:
+                throw new Error("Opção inválida. Use uma das 5 strings esperadas.");
+        }
+}
+
+
+        async function pickQuestion(year, area){
+            let index = escolherNumero(area)
+            let res = await fetch(`http://api.enem.dev/v1/exams/${year}/questions/${index}`)
+            res = await res.json()
+            return res
+        }
+
+    </script>
+
+</body>
+</html>
