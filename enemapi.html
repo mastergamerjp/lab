@@ -59,7 +59,7 @@
             </div>
 
             <!-- Botão Aleatório -->
-            <button id="random-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300">
+            <button id="random-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300">
                 Buscar Questão Aleatória (Ano + Área)
             </button>
             
@@ -68,7 +68,7 @@
             <!-- Busca Específica -->
             <div class="flex flex-col sm:flex-row gap-3">
                 <input type="number" id="index-input" placeholder="Número da Questão (ex: 136)" class="flex-grow p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                <button id="specific-btn" class="sm:w-auto bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300">
+                <button id="specific-btn" class="sm:w-auto bg-green-600 hover:bg-green-500 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300">
                     Buscar (Ano + Número)
                 </button>
             </div>
@@ -120,7 +120,7 @@
 
             <!-- Botão e Resposta -->
             <div class="space-y-4 text-center">
-                <button id="show-answer-btn" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-5 rounded-lg shadow-md transition duration-300">
+                <button id="show-answer-btn" class="bg-yellow-600 hover:bg-yellow-500 text-white font-bold py-2 px-5 rounded-lg shadow-md transition duration-300">
                     Mostrar Resposta
                 </button>
                 <div id="answer-display" class="hidden text-center p-3 bg-green-100 rounded-lg">
@@ -131,13 +131,13 @@
                 <div id="feedback-container" class="hidden flex flex-col items-center space-y-3 pt-4 border-t">
                     <p class="text-sm font-semibold text-gray-600">Você acertou esta questão?</p>
                     <div class="flex gap-4">
-                        <button id="mark-correct-btn" class="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-xl shadow-lg transition-all active:scale-95">
+                        <button id="mark-correct-btn" class="flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white font-bold py-2 px-6 rounded-xl shadow-lg transition-all active:scale-95">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                             </svg>
                             Correto
                         </button>
-                        <button id="mark-incorrect-btn" class="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-xl shadow-lg transition-all active:scale-95">
+                        <button id="mark-incorrect-btn" class="flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-6 rounded-xl shadow-lg transition-all active:scale-95">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
                             </svg>
