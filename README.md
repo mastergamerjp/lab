@@ -22,7 +22,7 @@ This project is actively maintained and developed within a **Termux** environmen
 
 ## 🌐 Live Access
 The hub is automatically deployed via GitHub Pages. Access the live experiments here:
-**[https://mastergamerjp.github.io/lab/](https://mastergamerjp.github.io/lab/)**
+**[https://mastrien.github.io/lab/](https://mastrien.github.io/lab/)**
 
 ---
 *Created with ❤️ in a mobile terminal.*
