@@ -17,6 +17,13 @@ An interactive web application designed to help Brazilian students study for the
 
 ---
 
+## ⏳ Pending Ideas
+- **Type-to-Read (Working Title):** A web application where you can upload a PDF or TXT file and type its content like a speed-typing game.
+    - **Goal:** Transform the passive (and sometimes boring) act of reading into an active, physically engaging experience.
+    - **Feasibility:** Needs investigation into PDF parsing in the browser and real-time typing validation.
+
+---
+
 ## 🛠️ Environment Info
 This project is actively maintained and developed within a **Termux** environment on Android. You can find detailed technical specs of the development environment in [environment.md](./environment.md).
 
