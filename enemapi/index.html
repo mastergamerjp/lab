@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Renderizador de Questões ENEM</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4 font-sans">
+
+    <div class="bg-white w-full max-w-3xl p-6 sm:p-8 rounded-2xl shadow-xl space-y-6">
+        
+        <h1 class="text-3xl font-bold text-center text-blue-600">
+            Buscador de Questões ENEM
+        </h1>
+
+        <!-- Busca -->
+        <div class="space-y-4 p-4 border border-gray-200 rounded-lg">
+            <h2 class="text-xl font-semibold text-gray-700">Buscar Questão</h2>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label for="year-select" class="block text-sm font-medium text-gray-600 mb-1">Ano</label>
+                    <select id="year-select" class="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Selecione o Ano</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="area-select" class="block text-sm font-medium text-gray-600 mb-1">Área do Conhecimento</label>
+                    <select id="area-select" class="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Qualquer Área</option>
+                        <option value="linguagens">Linguagens e Códigos</option>
+                        <option value="ciencias-humanas">Ciências Humanas</option>
+                        <option value="ciencias-natureza">Ciências da Natureza</option>
+                        <option value="matematica">Matemática</option>
+                    </select>
+                </div>
+            </div>
+
+            <button id="random-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300">
+                Buscar Questão Aleatória (Ano + Área)
+            </button>
+            
+            <hr class="my-2 border-gray-200">
+
+            <div class="flex flex-col sm:flex-row gap-3">
+                <input type="number" id="index-input" placeholder="Número da Questão (ex: 136)" class="flex-grow p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                <button id="specific-btn" class="sm:w-auto bg-green-600 hover:bg-green-500 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300">
+                    Buscar (Ano + Número)
+                </button>
+            </div>
+        </div>
+
+        <!-- Feedback UI -->
+        <div id="loading-indicator" class="hidden flex flex-col items-center justify-center p-6 space-y-2">
+            <div class="spinner"></div>
+            <span class="text-gray-600">Buscando questão...</span>
+        </div>
+
+        <div id="error-message" class="hidden text-center text-red-600 font-semibold bg-red-100 p-3 rounded-lg"></div>
+
+        <!-- Questão -->
+        <div id="result-container" class="hidden space-y-5 border-t pt-6">
+            
+            <div class="flex flex-wrap gap-x-4 gap-y-2 justify-between items-center bg-gray-50 p-3 rounded-lg">
+                <span class="font-bold text-lg text-blue-700">Questão: <span id="question-index"></span></span>
+                <div class="flex gap-x-4">
+                    <span class="text-sm font-medium text-gray-600">Ano: <span id="question-year" class="font-semibold text-gray-800"></span></span>
+                    <span class="text-sm font-medium text-gray-600">Área: <span id="question-area" class="font-semibold text-gray-800"></span></span>
+                </div>
+            </div>
+
+            <div id="question-context" class="p-4 bg-gray-100 rounded-lg shadow-inner space-y-4"></div>
+
+            <div id="question-enunciado-div" class="hidden">
+                <h3 class="font-semibold text-gray-700 mb-2">Enunciado:</h3>
+                <p id="question-enunciado-content" class="text-gray-800 text-lg"></p>
+            </div>
+
+            <div class="space-y-3">
+                <h3 class="font-semibold text-gray-700">Alternativas:</h3>
+                <div id="options-list" class="space-y-2"></div>
+            </div>
+
+            <div class="space-y-4 text-center">
+                <button id="show-answer-btn" class="bg-yellow-600 hover:bg-yellow-500 text-white font-bold py-2 px-5 rounded-lg shadow-md transition duration-300">
+                    Mostrar Resposta
+                </button>
+                <div id="answer-display" class="hidden text-center p-3 bg-green-100 rounded-lg">
+                    <span class="font-bold text-green-800 text-lg">Resposta Correta: <span id="correct-answer-span"></span></span>
+                </div>
+
+                <div id="feedback-container" class="hidden flex flex-col items-center space-y-3 pt-4 border-t">
+                    <p class="text-sm font-semibold text-gray-600">Você acertou esta questão?</p>
+                    <div class="flex gap-4">
+                        <button id="mark-correct-btn" class="flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white font-bold py-2 px-6 rounded-xl shadow-lg transition-all active:scale-95">
+                            Correto
+                        </button>
+                        <button id="mark-incorrect-btn" class="flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-6 rounded-xl shadow-lg transition-all active:scale-95">
+                            Incorreto
+                        </button>
+                    </div>
+                    <p id="save-status" class="text-xs text-green-600 font-medium opacity-0 transition-opacity">Progresso salvo!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estatísticas -->
+        <div class="mt-8 p-4 bg-gray-50 rounded-xl border border-gray-200">
+            <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Seu Progresso Geral</h3>
+            <div class="flex justify-around text-center">
+                <div>
+                    <span id="stats-total" class="block text-2xl font-bold text-blue-600">0</span>
+                    <span class="text-xs text-gray-500">Resolvidas</span>
+                </div>
+                <div>
+                    <span id="stats-correct" class="block text-2xl font-bold text-green-600">0</span>
+                    <span class="text-xs text-gray-500">Acertos</span>
+                </div>
+                <div>
+                    <span id="stats-incorrect" class="block text-2xl font-bold text-red-600">0</span>
+                    <span class="text-xs text-gray-500">Erros</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logic -->
+    <script type="module" src="script.js"></script>
+</body>
+</html>
