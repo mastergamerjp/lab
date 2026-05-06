@@ -27,6 +27,7 @@ const randomBtn = document.getElementById('random-btn');
 const specificBtn = document.getElementById('specific-btn');
 const loadingIndicator = document.getElementById('loading-indicator');
 const errorMessage = document.getElementById('error-message');
+const welcomePlaceholder = document.getElementById('welcome-placeholder');
 
 // Question Renderer
 const resultContainer = document.getElementById('result-container');
@@ -74,6 +75,7 @@ function showError(message) {
     errorMessage.textContent = message;
     errorMessage.classList.remove('hidden');
     loadingIndicator.classList.add('hidden');
+    welcomePlaceholder.classList.add('hidden');
 }
 
 /**
@@ -81,6 +83,7 @@ function showError(message) {
  */
 function resetResultUI() {
     resultContainer.classList.add('hidden');
+    welcomePlaceholder.classList.remove('hidden');
     errorMessage.classList.add('hidden');
     loadingIndicator.classList.add('hidden');
     
@@ -137,6 +140,7 @@ function getQuestionIndexByArea(area) {
  */
 export function renderQuestion(questionData) {
     resetResultUI();
+    welcomePlaceholder.classList.add('hidden');
 
     currentQuestionData = questionData;
     currentCorrectAnswer = questionData.correctAlternative;
@@ -280,8 +284,9 @@ function init() {
             showError('Por favor, selecione um ano primeiro.');
             return;
         }
-        loadingIndicator.classList.remove('hidden');
         resetResultUI();
+        loadingIndicator.classList.remove('hidden');
+        welcomePlaceholder.classList.add('hidden');
         try {
             const index = getQuestionIndexByArea(area);
             const data = await fetchQuestion(year, index);
@@ -298,8 +303,9 @@ function init() {
             showError('Por favor, informe o ano e o número da questão.');
             return;
         }
-        loadingIndicator.classList.remove('hidden');
         resetResultUI();
+        loadingIndicator.classList.remove('hidden');
+        welcomePlaceholder.classList.add('hidden');
         try {
             const data = await fetchQuestion(year, index);
             renderQuestion(data);

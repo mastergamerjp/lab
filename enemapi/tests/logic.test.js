@@ -24,6 +24,7 @@ const sandbox = new Function(`
                 'result-container': { classList: { add: () => {}, remove: () => {} } },
                 'errorMessage': { classList: { add: () => {}, remove: () => {} } },
                 'loading-indicator': { classList: { add: () => {}, remove: () => {} } },
+                'welcome-placeholder': { classList: { add: () => {}, remove: () => {} } },
                 'question-index': { textContent: '' },
                 'question-year': { textContent: '' },
                 'question-area': { textContent: '' },
