@@ -173,19 +173,28 @@ export function renderQuestion(questionData) {
     // Alternatives
     questionData.alternatives.forEach(alt => {
         const optionElement = document.createElement('div');
-        optionElement.className = 'border p-3 rounded-lg text-gray-700 transition duration-200 cursor-pointer hover:bg-gray-50';
+        optionElement.className = 'border p-3 rounded-lg text-gray-700 transition duration-200 cursor-pointer hover:bg-gray-100 group';
         optionElement.setAttribute('data-letter', alt.letter);
         
         let optionHTML = `
-            <span class="font-bold mr-2">${alt.letter})</span>
-            <span>${alt.text}</span>
+            <div class="flex items-start">
+                <span class="font-bold mr-3 bg-gray-200 px-2 py-1 rounded group-hover:bg-blue-200 transition-colors">${alt.letter}</span>
+                <span class="flex-grow">${alt.text}</span>
+            </div>
         `;
         
         if (alt.file) {
-            optionHTML += `<img src="${alt.file}" alt="Alternative ${alt.letter}" class="w-full max-w-sm mx-auto rounded-lg shadow-sm border mt-2">`;
+            optionHTML += `<img src="${alt.file}" alt="Alternative ${alt.letter}" class="w-full max-w-sm mx-auto rounded-lg shadow-sm border mt-3">`;
         }
         
         optionElement.innerHTML = optionHTML;
+
+        // Auto-validate on click
+        optionElement.addEventListener('click', () => {
+            if (optionElement.classList.contains('pointer-events-none') || document.querySelector('.answered')) return;
+            handleOptionSelection(alt.letter);
+        });
+
         optionsList.appendChild(optionElement);
     });
 
@@ -193,21 +202,29 @@ export function renderQuestion(questionData) {
 }
 
 /**
- * Highlights the correct answer and reveals the solution display.
+ * Handles the logic when a user selects an option.
  */
-function showAnswer() {
-    if (!currentCorrectAnswer) return;
+function handleOptionSelection(selectedLetter) {
+    const isCorrect = selectedLetter === currentCorrectAnswer;
+    
+    // Mark as answered
+    optionsList.classList.add('answered');
+    document.querySelectorAll('[data-letter]').forEach(el => {
+        el.classList.add('pointer-events-none');
+        const letter = el.getAttribute('data-letter');
+        
+        if (letter === currentCorrectAnswer) {
+            el.classList.add('bg-green-100', 'border-green-500', 'ring-2', 'ring-green-500');
+            el.querySelector('span.font-bold').classList.replace('bg-gray-200', 'bg-green-500');
+            el.querySelector('span.font-bold').classList.add('text-white');
+        } else if (letter === selectedLetter && !isCorrect) {
+            el.classList.add('bg-red-100', 'border-red-500', 'ring-2', 'ring-red-500');
+            el.querySelector('span.font-bold').classList.replace('bg-gray-200', 'bg-red-500');
+            el.querySelector('span.font-bold').classList.add('text-white');
+        }
+    });
 
-    correctAnswerSpan.textContent = currentCorrectAnswer;
-    answerDisplay.classList.remove('hidden');
-    feedbackContainer.classList.remove('hidden');
-
-    // Highlight correct alternative
-    const correctEl = document.querySelector(`[data-letter="${currentCorrectAnswer}"]`);
-    if (correctEl) {
-        correctEl.classList.add('bg-green-200', 'font-bold');
-        correctEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
+    saveProgress(isCorrect);
 }
 
 // --- Data & Persistence ---
@@ -298,9 +315,9 @@ function init() {
         }
     });
 
-    showAnswerBtn.addEventListener('click', showAnswer);
-    markCorrectBtn.addEventListener('click', () => saveProgress(true));
-    markIncorrectBtn.addEventListener('click', () => saveProgress(false));
+    // showAnswerBtn.addEventListener('click', showAnswer);
+    // markCorrectBtn.addEventListener('click', () => saveProgress(true));
+    // markIncorrectBtn.addEventListener('click', () => saveProgress(false));
 }
 
 // Global expose if needed, but preferably use modules

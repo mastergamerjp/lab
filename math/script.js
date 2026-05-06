@@ -223,55 +223,98 @@ const KatexRenderer = ({ tex }) => {
 const FormulaModal = ({ isOpen, onClose }) => {
     if (!isOpen) return null;
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-fade-in" onClick={onClose}>
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-                <div className="p-6 border-b border-slate-100 flex justify-between items-center sticky top-0 bg-white z-10">
-                    <h2 className="text-xl font-bold text-indigo-600">Fórmulas Úteis</h2>
-                    <button onClick={onClose} className="text-slate-400 hover:text-slate-600 p-1">
-                        <i className="ph ph-x text-2xl"></i>
+        <div 
+            className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center z-[100] p-4" 
+            onClick={onClose}
+        >
+            <div 
+                className="bg-white rounded-3xl shadow-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto flex flex-col" 
+                onClick={e => e.stopPropagation()}
+            >
+                {/* Header */}
+                <div className="p-6 border-b border-slate-100 flex justify-between items-center sticky top-0 bg-white/95 backdrop-blur-sm z-10">
+                    <h2 className="text-2xl font-bold text-indigo-600 flex items-center gap-2">
+                        <i className="ph-bold ph-function"></i>
+                        Fórmulas Úteis
+                    </h2>
+                    <button 
+                        onClick={onClose} 
+                        className="text-slate-400 hover:text-slate-600 hover:bg-slate-100 p-2 rounded-full transition-colors flex items-center justify-center"
+                        aria-label="Fechar"
+                    >
+                        <i className="ph-bold ph-x text-2xl"></i>
                     </button>
                 </div>
-                <div className="p-6 space-y-6">
-                    <div>
-                        <h3 className="font-semibold text-slate-700 mb-2 border-b pb-1">Derivadas Básicas</h3>
-                        <div className="text-sm text-slate-600 bg-slate-50 p-3 rounded space-y-2">
-                            <KatexRenderer tex="f(x) = x^n \implies f'(x) = nx^{n-1}" />
-                            <p className="text-xs text-slate-500 pt-1">Trigonométricas:</p>
-                            <div className="flex gap-4 justify-center">
-                                <span>$(\sin x)' = \cos x$</span>
-                                <span>$(\cos x)' = -\sin x$</span>
-                            </div>
-                            <p className="text-center pt-1">$(e^x)' = e^x \quad (\ln x)' = \frac{1}{x}$</p>
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <h3 className="font-semibold text-slate-700 mb-2 border-b pb-1">Regras de Derivação</h3>
-                        <div className="text-sm text-slate-600 bg-slate-50 p-3 rounded space-y-3">
-                            <div>
-                                <p className="font-medium text-xs uppercase text-slate-400 mb-1">Regra do Produto</p>
-                                <KatexRenderer tex="(u \cdot v)' = u'v + uv'" />
-                            </div>
-                            <div>
-                                <p className="font-medium text-xs uppercase text-slate-400 mb-1">Regra da Cadeia</p>
-                                <KatexRenderer tex="[f(g(x))]' = f'(g(x)) \cdot g'(x)" />
-                            </div>
-                        </div>
-                    </div>
 
-                    <div>
-                        <h3 className="font-semibold text-slate-700 mb-2 border-b pb-1">Integrais</h3>
-                        <div className="text-sm text-slate-600 bg-slate-50 p-3 rounded">
-                            <KatexRenderer tex="\int x^n dx = \frac{x^{n+1}}{n+1} + C" />
+                {/* Content */}
+                <div className="p-8 space-y-10">
+                    <section>
+                        <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Derivadas Básicas</h3>
+                        <div className="bg-slate-50 p-6 rounded-2xl space-y-6">
+                            <div className="text-center">
+                                <KatexRenderer tex="f(x) = x^n \implies f'(x) = nx^{n-1}" />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="p-3 bg-white rounded-xl shadow-sm border border-slate-100 text-center">
+                                    <KatexRenderer tex="(\sin x)' = \cos x" />
+                                </div>
+                                <div className="p-3 bg-white rounded-xl shadow-sm border border-slate-100 text-center">
+                                    <KatexRenderer tex="(\cos x)' = -\sin x" />
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="p-3 bg-white rounded-xl shadow-sm border border-slate-100 text-center">
+                                    <KatexRenderer tex="(e^x)' = e^x" />
+                                </div>
+                                <div className="p-3 bg-white rounded-xl shadow-sm border border-slate-100 text-center">
+                                    <KatexRenderer tex="(\ln x)' = \frac{1}{x}" />
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <h3 className="font-semibold text-slate-700 mb-2 border-b pb-1">Álgebra</h3>
-                        <div className="text-sm text-slate-600 bg-slate-50 p-3 rounded space-y-2">
-                            <p className="font-medium text-xs uppercase text-slate-400">Produto Escalar</p>
-                            <KatexRenderer tex="u \cdot v = u_1v_1 + \dots + u_nv_n" />
+                    </section>
+                    
+                    <section>
+                        <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Regras de Derivação</h3>
+                        <div className="bg-slate-50 p-6 rounded-2xl space-y-6">
+                            <div>
+                                <p className="text-xs font-semibold text-slate-400 mb-2">PRODUTO</p>
+                                <div className="p-4 bg-white rounded-xl shadow-sm border border-slate-100 text-center">
+                                    <KatexRenderer tex="(u \cdot v)' = u'v + uv'" />
+                                </div>
+                            </div>
+                            <div>
+                                <p className="text-xs font-semibold text-slate-400 mb-2">CADEIA</p>
+                                <div className="p-4 bg-white rounded-xl shadow-sm border border-slate-100 text-center">
+                                    <KatexRenderer tex="[f(g(x))]' = f'(g(x)) \cdot g'(x)" />
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    </section>
+
+                    <section>
+                        <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Cálculo Integral</h3>
+                        <div className="bg-indigo-50/50 p-6 rounded-2xl">
+                            <KatexRenderer tex="\int x^n dx = \frac{x^{n+1}}{n+1} + C \quad (n \neq -1)" />
+                        </div>
+                    </section>
+
+                    <section>
+                        <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Álgebra Linear</h3>
+                        <div className="bg-slate-50 p-6 rounded-2xl">
+                            <p className="text-xs font-semibold text-slate-400 mb-3">PRODUTO ESCALAR</p>
+                            <KatexRenderer tex="u \cdot v = \sum_{i=1}^n u_i v_i = |u||v|\cos \theta" />
+                        </div>
+                    </section>
+                </div>
+
+                {/* Footer */}
+                <div className="p-6 border-t border-slate-100 text-center">
+                    <button 
+                        onClick={onClose}
+                        className="w-full bg-slate-900 text-white py-3 rounded-2xl font-bold hover:bg-slate-800 transition-colors"
+                    >
+                        Entendi!
+                    </button>
                 </div>
             </div>
         </div>
