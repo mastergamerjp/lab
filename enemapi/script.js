@@ -86,6 +86,7 @@ function resetResultUI() {
     
     saveStatus.classList.add('opacity-0');
     optionsList.innerHTML = '';
+    optionsList.classList.remove('answered');
     questionContext.innerHTML = '';
     currentCorrectAnswer = null;
     currentQuestionData = null;
