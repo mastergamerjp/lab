@@ -100,7 +100,7 @@ function resetResultUI() {
 }
 
 /**
- * Parses markdown-style context strings (images and line breaks) into HTML.
+ * Parses markdown-style context strings (images, bold, italic, and line breaks) into HTML.
  */
 function parseContext(contextString) {
     if (!contextString) return '';
@@ -112,6 +112,14 @@ function parseContext(contextString) {
         '<img src="$1" alt="Context image" class="w-full max-w-md mx-auto rounded-lg shadow-sm border my-4">'
     );
     
+    // Bold: **text** or __text__
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    html = html.replace(/__(.*?)__/g, '<strong>$1</strong>');
+
+    // Italic: *text* or _text_
+    html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    html = html.replace(/_(.*?)_/g, '<em>$1</em>');
+
     // Convert newlines to <br>
     html = html.replace(/\n/g, '<br>');
     
@@ -160,7 +168,7 @@ export function renderQuestion(questionData) {
 
     // Enunciado
     if (questionData.alternativesIntroduction) {
-        questionEnunciadoContent.textContent = questionData.alternativesIntroduction;
+        questionEnunciadoContent.innerHTML = parseContext(questionData.alternativesIntroduction);
         questionEnunciadoDiv.classList.remove('hidden');
     } else {
         questionEnunciadoDiv.classList.add('hidden');
@@ -172,10 +180,12 @@ export function renderQuestion(questionData) {
         optionElement.className = 'border p-3 rounded-lg text-gray-700 transition duration-200 cursor-pointer hover:bg-gray-100 group';
         optionElement.setAttribute('data-letter', alt.letter);
         
+        const altText = (alt.text && alt.text !== "null") ? alt.text : "";
+
         let optionHTML = `
             <div class="flex items-start">
                 <span class="font-bold mr-3 bg-gray-200 px-2 py-1 rounded group-hover:bg-blue-200 transition-colors">${alt.letter}</span>
-                <span class="flex-grow">${alt.text}</span>
+                <span class="flex-grow">${altText}</span>
             </div>
         `;
         
