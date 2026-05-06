@@ -37,14 +37,8 @@ const questionContext = document.getElementById('question-context');
 const questionEnunciadoDiv = document.getElementById('question-enunciado-div');
 const questionEnunciadoContent = document.getElementById('question-enunciado-content');
 const optionsList = document.getElementById('options-list');
-const showAnswerBtn = document.getElementById('show-answer-btn');
-const answerDisplay = document.getElementById('answer-display');
-const correctAnswerSpan = document.getElementById('correct-answer-span');
 
 // Feedback & Stats
-const feedbackContainer = document.getElementById('feedback-container');
-const markCorrectBtn = document.getElementById('mark-correct-btn');
-const markIncorrectBtn = document.getElementById('mark-incorrect-btn');
 const saveStatus = document.getElementById('save-status');
 const statsTotal = document.getElementById('stats-total');
 const statsCorrect = document.getElementById('stats-correct');
@@ -90,8 +84,6 @@ function resetResultUI() {
     errorMessage.classList.add('hidden');
     loadingIndicator.classList.add('hidden');
     
-    answerDisplay.classList.add('hidden');
-    feedbackContainer.classList.add('hidden');
     saveStatus.classList.add('opacity-0');
     optionsList.innerHTML = '';
     questionContext.innerHTML = '';
@@ -100,7 +92,7 @@ function resetResultUI() {
 
     // Reset previous answer highlights
     document.querySelectorAll('[data-letter]').forEach(el => {
-        el.classList.remove('bg-green-200', 'font-bold');
+        el.classList.remove('bg-green-100', 'bg-red-100', 'border-green-500', 'border-red-500', 'ring-2');
     });
 }
 
@@ -314,10 +306,6 @@ function init() {
             showError('Questão não encontrada ou erro na API.');
         }
     });
-
-    // showAnswerBtn.addEventListener('click', showAnswer);
-    // markCorrectBtn.addEventListener('click', () => saveProgress(true));
-    // markIncorrectBtn.addEventListener('click', () => saveProgress(false));
 }
 
 // Global expose if needed, but preferably use modules

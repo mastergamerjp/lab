@@ -13,8 +13,28 @@ const testableScript = scriptContent
 
 const sandbox = new Function(`
     const document = { 
-        getElementById: () => ({ addEventListener: () => {}, classList: { add: () => {}, remove: () => {} } }),
-        querySelectorAll: () => []
+        getElementById: (id) => {
+            const elements = {
+                'year-select': { appendChild: () => {}, options: [] },
+                'options-list': { appendChild: () => {}, innerHTML: '', classList: { add: () => {}, remove: () => {} } },
+                'save-status': { classList: { add: () => {}, remove: () => {} } },
+                'stats-total': { textContent: '' },
+                'stats-correct': { textContent: '' },
+                'stats-incorrect': { textContent: '' },
+                'result-container': { classList: { add: () => {}, remove: () => {} } },
+                'errorMessage': { classList: { add: () => {}, remove: () => {} } },
+                'loading-indicator': { classList: { add: () => {}, remove: () => {} } },
+                'question-index': { textContent: '' },
+                'question-year': { textContent: '' },
+                'question-area': { textContent: '' },
+                'question-context': { innerHTML: '', classList: { add: () => {}, remove: () => {} } },
+                'question-enunciado-div': { classList: { add: () => {}, remove: () => {} } },
+                'question-enunciado-content': { textContent: '' }
+            };
+            return elements[id] || { addEventListener: () => {}, classList: { add: () => {}, remove: () => {} } };
+        },
+        querySelectorAll: () => [],
+        querySelector: () => null
     };
     const window = { addEventListener: () => {} };
     const localStorage = { getItem: () => null, setItem: () => null };
