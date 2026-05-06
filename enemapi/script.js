@@ -236,12 +236,55 @@ async function fetchQuestion(year, index) {
  */
 function updateStats() {
     const history = JSON.parse(localStorage.getItem('enem_history') || '[]');
+    
+    // Global stats
     const correct = history.filter(q => q.isCorrect).length;
     const incorrect = history.length - correct;
     
     statsTotal.textContent = history.length;
     statsCorrect.textContent = correct;
     statsIncorrect.textContent = incorrect;
+
+    // Area-specific stats
+    const areas = ['linguagens', 'ciencias-humanas', 'ciencias-natureza', 'matematica'];
+    
+    areas.forEach(area => {
+        const areaHistory = history.filter(q => q.area === area);
+        const areaTotal = areaHistory.length;
+        const areaCorrect = areaHistory.filter(q => q.isCorrect).length;
+        const rate = areaTotal > 0 ? Math.round((areaCorrect / areaTotal) * 100) : 0;
+
+        // Update UI elements
+        const totalEl = document.getElementById(`total-${area}`);
+        const rateEl = document.getElementById(`rate-${area}`);
+        const progressEl = document.getElementById(`progress-${area}`);
+
+        if (totalEl) totalEl.textContent = areaTotal;
+        if (rateEl) rateEl.textContent = `${rate}%`;
+        if (progressEl) progressEl.style.width = `${rate}%`;
+    });
+}
+
+/**
+ * Handles the accordion toggle for detailed stats.
+ */
+function setupStatsAccordion() {
+    const btn = document.getElementById('stats-accordion-btn');
+    const content = document.getElementById('stats-accordion-content');
+    const icon = document.getElementById('stats-accordion-icon');
+
+    if (btn && content && icon) {
+        btn.addEventListener('click', () => {
+            const isHidden = content.classList.contains('hidden');
+            if (isHidden) {
+                content.classList.remove('hidden');
+                icon.classList.add('rotate-180');
+            } else {
+                content.classList.add('hidden');
+                icon.classList.remove('rotate-180');
+            }
+        });
+    }
 }
 
 /**
@@ -275,6 +318,7 @@ function saveProgress(isCorrect) {
 function init() {
     populateYears();
     updateStats();
+    setupStatsAccordion();
 
     randomBtn.addEventListener('click', async () => {
         const year = yearSelect.value;

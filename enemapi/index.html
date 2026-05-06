@@ -78,25 +78,96 @@
                 </div>
 
                 <!-- Card de Estatísticas -->
-                <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
-                    <h3 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-6 flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h2a2 2 0 002-2zm0 0h10a2 2 0 002-2v-3a2 2 0 00-2-2h-2a2 2 0 00-2 2v3a2 2 0 002 2zm0 0v-5a2 2 0 00-2-2H9" />
-                        </svg>
-                        Seu Desempenho
-                    </h3>
-                    <div class="grid grid-cols-3 gap-2">
-                        <div class="text-center p-3 bg-blue-50 rounded-xl">
-                            <span id="stats-total" class="block text-2xl font-black text-blue-600">0</span>
-                            <span class="text-[10px] font-bold text-blue-400 uppercase">Total</span>
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                    <!-- Resumo Principal (Sempre Visível) -->
+                    <div class="p-6 space-y-6">
+                        <h3 class="text-sm font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h2a2 2 0 002-2zm0 0h10a2 2 0 002-2v-3a2 2 0 00-2-2h-2a2 2 0 00-2 2v3a2 2 0 002 2zm0 0v-5a2 2 0 00-2-2H9" />
+                            </svg>
+                            Seu Desempenho
+                        </h3>
+                        <div class="grid grid-cols-3 gap-2">
+                            <div class="text-center p-3 bg-blue-50 rounded-xl">
+                                <span id="stats-total" class="block text-2xl font-black text-blue-600">0</span>
+                                <span class="text-[10px] font-bold text-blue-400 uppercase">Total</span>
+                            </div>
+                            <div class="text-center p-3 bg-emerald-50 rounded-xl">
+                                <span id="stats-correct" class="block text-2xl font-black text-emerald-600">0</span>
+                                <span class="text-[10px] font-bold text-emerald-400 uppercase">Acertos</span>
+                            </div>
+                            <div class="text-center p-3 bg-red-50 rounded-xl">
+                                <span id="stats-incorrect" class="block text-2xl font-black text-red-600">0</span>
+                                <span class="text-[10px] font-bold text-red-400 uppercase">Erros</span>
+                            </div>
                         </div>
-                        <div class="text-center p-3 bg-emerald-50 rounded-xl">
-                            <span id="stats-correct" class="block text-2xl font-black text-emerald-600">0</span>
-                            <span class="text-[10px] font-bold text-emerald-400 uppercase">Acertos</span>
-                        </div>
-                        <div class="text-center p-3 bg-red-50 rounded-xl">
-                            <span id="stats-incorrect" class="block text-2xl font-black text-red-600">0</span>
-                            <span class="text-[10px] font-bold text-red-400 uppercase">Erros</span>
+                    </div>
+
+                    <!-- Accordion: Detalhes por Área -->
+                    <div class="border-t border-gray-100">
+                        <button id="stats-accordion-btn" class="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors group">
+                            <span class="text-xs font-bold text-gray-500 uppercase tracking-wide">Detalhes por Área</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 group-hover:text-blue-500 transition-transform duration-300" id="stats-accordion-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        
+                        <div id="stats-accordion-content" class="hidden px-6 pb-6 space-y-4">
+                            <!-- Template para cada área -->
+                            <div class="area-stats-container space-y-4 pt-2">
+                                <!-- Linguagens -->
+                                <div class="space-y-1">
+                                    <div class="flex justify-between text-[11px] font-bold uppercase tracking-wider">
+                                        <span class="text-gray-500">Linguagens</span>
+                                        <span class="text-blue-600" id="rate-linguagens">0%</span>
+                                    </div>
+                                    <div class="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                                        <div id="progress-linguagens" class="h-full bg-blue-500 transition-all duration-500" style="width: 0%"></div>
+                                    </div>
+                                    <div class="text-[10px] text-gray-400 font-medium">
+                                        Resolvidas: <span id="total-linguagens" class="text-gray-600">0</span>
+                                    </div>
+                                </div>
+                                <!-- Ciências Humanas -->
+                                <div class="space-y-1">
+                                    <div class="flex justify-between text-[11px] font-bold uppercase tracking-wider">
+                                        <span class="text-gray-500">Humanas</span>
+                                        <span class="text-orange-600" id="rate-ciencias-humanas">0%</span>
+                                    </div>
+                                    <div class="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                                        <div id="progress-ciencias-humanas" class="h-full bg-orange-500 transition-all duration-500" style="width: 0%"></div>
+                                    </div>
+                                    <div class="text-[10px] text-gray-400 font-medium">
+                                        Resolvidas: <span id="total-ciencias-humanas" class="text-gray-600">0</span>
+                                    </div>
+                                </div>
+                                <!-- Ciências da Natureza -->
+                                <div class="space-y-1">
+                                    <div class="flex justify-between text-[11px] font-bold uppercase tracking-wider">
+                                        <span class="text-gray-500">Natureza</span>
+                                        <span class="text-emerald-600" id="rate-ciencias-natureza">0%</span>
+                                    </div>
+                                    <div class="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                                        <div id="progress-ciencias-natureza" class="h-full bg-emerald-500 transition-all duration-500" style="width: 0%"></div>
+                                    </div>
+                                    <div class="text-[10px] text-gray-400 font-medium">
+                                        Resolvidas: <span id="total-ciencias-natureza" class="text-gray-600">0</span>
+                                    </div>
+                                </div>
+                                <!-- Matemática -->
+                                <div class="space-y-1">
+                                    <div class="flex justify-between text-[11px] font-bold uppercase tracking-wider">
+                                        <span class="text-gray-500">Matemática</span>
+                                        <span class="text-indigo-600" id="rate-matematica">0%</span>
+                                    </div>
+                                    <div class="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                                        <div id="progress-matematica" class="h-full bg-indigo-500 transition-all duration-500" style="width: 0%"></div>
+                                    </div>
+                                    <div class="text-[10px] text-gray-400 font-medium">
+                                        Resolvidas: <span id="total-matematica" class="text-gray-600">0</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
