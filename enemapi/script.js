@@ -331,12 +331,19 @@ function init() {
     setupStatsAccordion();
 
     randomBtn.addEventListener('click', async () => {
-        const year = yearSelect.value;
+        let year = yearSelect.value;
         const area = areaSelect.value;
+        
         if (!year) {
             showError('Por favor, selecione um ano primeiro.');
             return;
         }
+
+        if (year === 'random') {
+            // Pick a random year between 2009 and 2023
+            year = Math.floor(Math.random() * (2023 - 2009 + 1)) + 2009;
+        }
+
         resetResultUI();
         loadingIndicator.classList.remove('hidden');
         welcomePlaceholder.classList.add('hidden');
@@ -352,6 +359,12 @@ function init() {
     specificBtn.addEventListener('click', async () => {
         const year = yearSelect.value;
         const index = indexInput.value;
+
+        if (year === 'random') {
+            showError('Por favor, selecione um ano específico para buscar por número.');
+            return;
+        }
+
         if (!year || !index) {
             showError('Por favor, informe o ano e o número da questão.');
             return;
