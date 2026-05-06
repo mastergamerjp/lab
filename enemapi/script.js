@@ -83,7 +83,6 @@ function showError(message) {
  */
 function resetResultUI() {
     resultContainer.classList.add('hidden');
-    welcomePlaceholder.classList.remove('hidden');
     errorMessage.classList.add('hidden');
     loadingIndicator.classList.add('hidden');
     
