@@ -45,7 +45,55 @@ const statsTotal = document.getElementById('stats-total');
 const statsCorrect = document.getElementById('stats-correct');
 const statsIncorrect = document.getElementById('stats-incorrect');
 
+// Theme Toggle
+const themeToggleBtn = document.getElementById('theme-toggle');
+const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
 // --- Helper Functions ---
+
+/**
+ * Initializes the theme based on localStorage or system preferences.
+ */
+function initTheme() {
+    if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+        themeToggleLightIcon.classList.remove('hidden');
+    } else {
+        document.documentElement.classList.remove('dark');
+        themeToggleDarkIcon.classList.remove('hidden');
+    }
+}
+
+/**
+ * Toggles the theme between light and dark.
+ */
+function toggleTheme() {
+    // toggle icons inside button
+    themeToggleDarkIcon.classList.toggle('hidden');
+    themeToggleLightIcon.classList.toggle('hidden');
+
+    // if set via local storage previously
+    if (localStorage.getItem('color-theme')) {
+        if (localStorage.getItem('color-theme') === 'light') {
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('color-theme', 'dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('color-theme', 'light');
+        }
+
+    // if NOT set via local storage previously
+    } else {
+        if (document.documentElement.classList.contains('dark')) {
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('color-theme', 'light');
+        } else {
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('color-theme', 'dark');
+        }
+    }
+}
 
 /**
  * Populates the year dropdown with ENEM exam years.
@@ -95,7 +143,7 @@ function resetResultUI() {
 
     // Reset previous answer highlights
     document.querySelectorAll('[data-letter]').forEach(el => {
-        el.classList.remove('bg-green-100', 'bg-red-100', 'border-green-500', 'border-red-500', 'ring-2');
+        el.classList.remove('bg-green-100', 'dark:bg-green-900/30', 'bg-red-100', 'dark:bg-red-900/30', 'border-green-500', 'border-red-500', 'ring-2', 'ring-green-500', 'ring-red-500');
     });
 }
 
@@ -177,20 +225,20 @@ export function renderQuestion(questionData) {
     // Alternatives
     questionData.alternatives.forEach(alt => {
         const optionElement = document.createElement('div');
-        optionElement.className = 'border p-3 rounded-lg text-gray-700 transition duration-200 cursor-pointer hover:bg-gray-100 group';
+        optionElement.className = 'border dark:border-gray-700 p-3 rounded-lg text-gray-700 dark:text-gray-300 transition duration-200 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 group';
         optionElement.setAttribute('data-letter', alt.letter);
         
         const altText = (alt.text && alt.text !== "null") ? alt.text : "";
 
         let optionHTML = `
             <div class="flex items-start">
-                <span class="font-bold mr-3 bg-gray-200 px-2 py-1 rounded group-hover:bg-blue-200 transition-colors">${alt.letter}</span>
+                <span class="font-bold mr-3 bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded group-hover:bg-blue-200 dark:group-hover:bg-blue-900/50 text-gray-800 dark:text-gray-200 transition-colors">${alt.letter}</span>
                 <span class="flex-grow">${altText}</span>
             </div>
         `;
         
         if (alt.file) {
-            optionHTML += `<img src="${alt.file}" alt="Alternative ${alt.letter}" class="w-full max-w-sm mx-auto rounded-lg shadow-sm border mt-3">`;
+            optionHTML += `<img src="${alt.file}" alt="Alternative ${alt.letter}" class="w-full max-w-sm mx-auto rounded-lg shadow-sm border dark:border-gray-700 mt-3">`;
         }
         
         optionElement.innerHTML = optionHTML;
@@ -220,12 +268,14 @@ function handleOptionSelection(selectedLetter) {
         const letter = el.getAttribute('data-letter');
         
         if (letter === currentCorrectAnswer) {
-            el.classList.add('bg-green-100', 'border-green-500', 'ring-2', 'ring-green-500');
+            el.classList.add('bg-green-100', 'dark:bg-green-900/30', 'border-green-500', 'ring-2', 'ring-green-500');
             el.querySelector('span.font-bold').classList.replace('bg-gray-200', 'bg-green-500');
+            el.querySelector('span.font-bold').classList.replace('dark:bg-gray-700', 'bg-green-500');
             el.querySelector('span.font-bold').classList.add('text-white');
         } else if (letter === selectedLetter && !isCorrect) {
-            el.classList.add('bg-red-100', 'border-red-500', 'ring-2', 'ring-red-500');
+            el.classList.add('bg-red-100', 'dark:bg-red-900/30', 'border-red-500', 'ring-2', 'ring-red-500');
             el.querySelector('span.font-bold').classList.replace('bg-gray-200', 'bg-red-500');
+            el.querySelector('span.font-bold').classList.replace('dark:bg-gray-700', 'bg-red-500');
             el.querySelector('span.font-bold').classList.add('text-white');
         }
     });
@@ -326,9 +376,12 @@ function saveProgress(isCorrect) {
 // --- Initialization ---
 
 function init() {
+    initTheme();
     populateYears();
     updateStats();
     setupStatsAccordion();
+
+    themeToggleBtn.addEventListener('click', toggleTheme);
 
     randomBtn.addEventListener('click', async () => {
         let year = yearSelect.value;

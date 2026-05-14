@@ -6,19 +6,32 @@
     <title>ENEM Questões - Workspace</title>
     <!-- Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
     <!-- Custom Styles -->
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-gray-100 min-h-screen p-4 sm:p-6 lg:p-8 font-sans">
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen p-4 sm:p-6 lg:p-8 font-sans transition-colors duration-300">
 
     <div class="max-w-7xl mx-auto space-y-8">
         
         <!-- Header Principal -->
-        <header class="text-center lg:text-left">
-            <h1 class="text-4xl font-extrabold text-blue-600 tracking-tight">
-                Buscador de Questões ENEM
-            </h1>
-            <p class="text-gray-500 mt-2">Pratique com questões reais dos exames anteriores.</p>
+        <header class="flex flex-col lg:flex-row justify-between items-center gap-4">
+            <div class="text-center lg:text-left">
+                <h1 class="text-4xl font-extrabold text-blue-600 dark:text-blue-400 tracking-tight">
+                    Buscador de Questões ENEM
+                </h1>
+                <p class="text-gray-500 dark:text-gray-400 mt-2">Pratique com questões reais dos exames anteriores.</p>
+            </div>
+            
+            <!-- Theme Toggle -->
+            <button id="theme-toggle" class="p-3 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-all active:scale-95">
+                <svg id="theme-toggle-dark-icon" class="hidden w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                <svg id="theme-toggle-light-icon" class="hidden w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+            </button>
         </header>
 
         <div class="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-8 items-start">
@@ -27,29 +40,29 @@
             <aside class="space-y-6 lg:sticky lg:top-8">
                 
                 <!-- Card de Busca -->
-                <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 space-y-6">
-                    <div class="flex items-center gap-2 border-b pb-4">
-                        <div class="p-2 bg-blue-100 rounded-lg text-blue-600">
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 space-y-6 transition-colors">
+                    <div class="flex items-center gap-2 border-b dark:border-gray-700 pb-4">
+                        <div class="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-blue-600 dark:text-blue-400">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                         </div>
-                        <h2 class="text-xl font-bold text-gray-800">Filtros de Busca</h2>
+                        <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100">Filtros de Busca</h2>
                     </div>
                     
                     <div class="space-y-4">
                         <!-- Ano -->
                         <div>
-                            <label for="year-select" class="block text-sm font-semibold text-gray-600 mb-1">Ano do Exame</label>
-                            <select id="year-select" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none">
+                            <label for="year-select" class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Ano do Exame</label>
+                            <select id="year-select" class="w-full p-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none dark:text-gray-100">
                                 <option value="random">Aleatório</option>
                             </select>
                         </div>
                         
                         <!-- Área -->
                         <div>
-                            <label for="area-select" class="block text-sm font-semibold text-gray-600 mb-1">Área do Conhecimento</label>
-                            <select id="area-select" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none">
+                            <label for="area-select" class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Área do Conhecimento</label>
+                            <select id="area-select" class="w-full p-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none dark:text-gray-100">
                                 <option value="">Qualquer Área</option>
                                 <option value="linguagens">Linguagens e Códigos</option>
                                 <option value="ciencias-humanas">Ciências Humanas</option>
@@ -63,13 +76,13 @@
                         </button>
                         
                         <div class="relative flex items-center py-2">
-                            <div class="flex-grow border-t border-gray-100"></div>
-                            <span class="flex-shrink mx-4 text-gray-300 text-xs font-bold uppercase">Ou busca direta</span>
-                            <div class="flex-grow border-t border-gray-100"></div>
+                            <div class="flex-grow border-t border-gray-100 dark:border-gray-700"></div>
+                            <span class="flex-shrink mx-4 text-gray-300 dark:text-gray-600 text-xs font-bold uppercase">Ou busca direta</span>
+                            <div class="flex-grow border-t border-gray-100 dark:border-gray-700"></div>
                         </div>
 
                         <div class="flex flex-col gap-3">
-                            <input type="number" id="index-input" placeholder="Nº da Questão (ex: 136)" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                            <input type="number" id="index-input" placeholder="Nº da Questão (ex: 136)" class="w-full p-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none dark:text-gray-100">
                             <button id="specific-btn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-all active:scale-[0.98]">
                                 Buscar por Número
                             </button>
@@ -78,35 +91,35 @@
                 </div>
 
                 <!-- Card de Estatísticas -->
-                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden transition-colors">
                     <!-- Resumo Principal (Sempre Visível) -->
                     <div class="p-6 space-y-6">
-                        <h3 class="text-sm font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                        <h3 class="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest flex items-center gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h2a2 2 0 002-2zm0 0h10a2 2 0 002-2v-3a2 2 0 00-2-2h-2a2 2 0 00-2 2v3a2 2 0 002 2zm0 0v-5a2 2 0 00-2-2H9" />
                             </svg>
                             Seu Desempenho
                         </h3>
                         <div class="grid grid-cols-3 gap-2">
-                            <div class="text-center p-3 bg-blue-50 rounded-xl">
-                                <span id="stats-total" class="block text-2xl font-black text-blue-600">0</span>
-                                <span class="text-[10px] font-bold text-blue-400 uppercase">Total</span>
+                            <div class="text-center p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
+                                <span id="stats-total" class="block text-2xl font-black text-blue-600 dark:text-blue-400">0</span>
+                                <span class="text-[10px] font-bold text-blue-400 dark:text-blue-500 uppercase">Total</span>
                             </div>
-                            <div class="text-center p-3 bg-emerald-50 rounded-xl">
-                                <span id="stats-correct" class="block text-2xl font-black text-emerald-600">0</span>
-                                <span class="text-[10px] font-bold text-emerald-400 uppercase">Acertos</span>
+                            <div class="text-center p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl">
+                                <span id="stats-correct" class="block text-2xl font-black text-emerald-600 dark:text-emerald-400">0</span>
+                                <span class="text-[10px] font-bold text-emerald-400 dark:text-emerald-500 uppercase">Acertos</span>
                             </div>
-                            <div class="text-center p-3 bg-red-50 rounded-xl">
-                                <span id="stats-incorrect" class="block text-2xl font-black text-red-600">0</span>
+                            <div class="text-center p-3 bg-red-50 dark:bg-red-900/20 rounded-xl">
+                                <span id="stats-incorrect" class="block text-2xl font-black text-red-600 dark:text-red-400">0</span>
                                 <span class="text-[10px] font-bold text-red-400 uppercase">Erros</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- Accordion: Detalhes por Área -->
-                    <div class="border-t border-gray-100">
-                        <button id="stats-accordion-btn" class="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors group">
-                            <span class="text-xs font-bold text-gray-500 uppercase tracking-wide">Detalhes por Área</span>
+                    <div class="border-t border-gray-100 dark:border-gray-700">
+                        <button id="stats-accordion-btn" class="w-full p-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors group">
+                            <span class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Detalhes por Área</span>
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 group-hover:text-blue-500 transition-transform duration-300" id="stats-accordion-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                             </svg>
@@ -118,53 +131,53 @@
                                 <!-- Linguagens -->
                                 <div class="space-y-1">
                                     <div class="flex justify-between text-[11px] font-bold uppercase tracking-wider">
-                                        <span class="text-gray-500">Linguagens</span>
-                                        <span class="text-blue-600" id="rate-linguagens">0%</span>
+                                        <span class="text-gray-500 dark:text-gray-400">Linguagens</span>
+                                        <span class="text-blue-600 dark:text-blue-400" id="rate-linguagens">0%</span>
                                     </div>
-                                    <div class="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                                    <div class="h-1.5 w-full bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
                                         <div id="progress-linguagens" class="h-full bg-blue-500 transition-all duration-500" style="width: 0%"></div>
                                     </div>
-                                    <div class="text-[10px] text-gray-400 font-medium">
-                                        Resolvidas: <span id="total-linguagens" class="text-gray-600">0</span>
+                                    <div class="text-[10px] text-gray-400 dark:text-gray-500 font-medium">
+                                        Resolvidas: <span id="total-linguagens" class="text-gray-600 dark:text-gray-300">0</span>
                                     </div>
                                 </div>
                                 <!-- Ciências Humanas -->
                                 <div class="space-y-1">
                                     <div class="flex justify-between text-[11px] font-bold uppercase tracking-wider">
-                                        <span class="text-gray-500">Humanas</span>
-                                        <span class="text-orange-600" id="rate-ciencias-humanas">0%</span>
+                                        <span class="text-gray-500 dark:text-gray-400">Humanas</span>
+                                        <span class="text-orange-600 dark:text-orange-400" id="rate-ciencias-humanas">0%</span>
                                     </div>
-                                    <div class="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                                    <div class="h-1.5 w-full bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
                                         <div id="progress-ciencias-humanas" class="h-full bg-orange-500 transition-all duration-500" style="width: 0%"></div>
                                     </div>
-                                    <div class="text-[10px] text-gray-400 font-medium">
-                                        Resolvidas: <span id="total-ciencias-humanas" class="text-gray-600">0</span>
+                                    <div class="text-[10px] text-gray-400 dark:text-gray-500 font-medium">
+                                        Resolvidas: <span id="total-ciencias-humanas" class="text-gray-600 dark:text-gray-300">0</span>
                                     </div>
                                 </div>
                                 <!-- Ciências da Natureza -->
                                 <div class="space-y-1">
                                     <div class="flex justify-between text-[11px] font-bold uppercase tracking-wider">
-                                        <span class="text-gray-500">Natureza</span>
-                                        <span class="text-emerald-600" id="rate-ciencias-natureza">0%</span>
+                                        <span class="text-gray-500 dark:text-gray-400">Natureza</span>
+                                        <span class="text-emerald-600 dark:text-emerald-400" id="rate-ciencias-natureza">0%</span>
                                     </div>
-                                    <div class="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                                    <div class="h-1.5 w-full bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
                                         <div id="progress-ciencias-natureza" class="h-full bg-emerald-500 transition-all duration-500" style="width: 0%"></div>
                                     </div>
-                                    <div class="text-[10px] text-gray-400 font-medium">
-                                        Resolvidas: <span id="total-ciencias-natureza" class="text-gray-600">0</span>
+                                    <div class="text-[10px] text-gray-400 dark:text-gray-500 font-medium">
+                                        Resolvidas: <span id="total-ciencias-natureza" class="text-gray-600 dark:text-gray-300">0</span>
                                     </div>
                                 </div>
                                 <!-- Matemática -->
                                 <div class="space-y-1">
                                     <div class="flex justify-between text-[11px] font-bold uppercase tracking-wider">
-                                        <span class="text-gray-500">Matemática</span>
-                                        <span class="text-indigo-600" id="rate-matematica">0%</span>
+                                        <span class="text-gray-500 dark:text-gray-400">Matemática</span>
+                                        <span class="text-indigo-600 dark:text-indigo-400" id="rate-matematica">0%</span>
                                     </div>
-                                    <div class="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                                    <div class="h-1.5 w-full bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
                                         <div id="progress-matematica" class="h-full bg-indigo-500 transition-all duration-500" style="width: 0%"></div>
                                     </div>
-                                    <div class="text-[10px] text-gray-400 font-medium">
-                                        Resolvidas: <span id="total-matematica" class="text-gray-600">0</span>
+                                    <div class="text-[10px] text-gray-400 dark:text-gray-500 font-medium">
+                                        Resolvidas: <span id="total-matematica" class="text-gray-600 dark:text-gray-300">0</span>
                                     </div>
                                 </div>
                             </div>
@@ -174,27 +187,27 @@
             </aside>
 
             <!-- COLUNA DIREITA: Conteúdo da Questão -->
-            <main class="bg-white min-h-[600px] rounded-3xl shadow-xl border border-gray-100 overflow-hidden flex flex-col">
+            <main class="bg-white dark:bg-gray-800 min-h-[600px] rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col transition-colors">
                 
                 <!-- Feedback de Carregamento -->
                 <div id="loading-indicator" class="hidden flex-grow flex flex-col items-center justify-center p-12 space-y-4">
                     <div class="spinner"></div>
-                    <span class="text-gray-400 font-medium animate-pulse">Buscando na base de dados...</span>
+                    <span class="text-gray-400 dark:text-gray-500 font-medium animate-pulse">Buscando na base de dados...</span>
                 </div>
 
                 <!-- Mensagem de Erro -->
-                <div id="error-message" class="hidden m-6 text-center text-red-600 font-semibold bg-red-50 p-4 rounded-2xl border border-red-100"></div>
+                <div id="error-message" class="hidden m-6 text-center text-red-600 dark:text-red-400 font-semibold bg-red-50 dark:bg-red-900/20 p-4 rounded-2xl border border-red-100 dark:border-red-900/30"></div>
 
                 <!-- Placeholder Inicial -->
                 <div id="welcome-placeholder" class="flex-grow flex flex-col items-center justify-center p-12 text-center space-y-6">
-                    <div class="p-6 bg-blue-50 rounded-full text-blue-200">
+                    <div class="p-6 bg-blue-50 dark:bg-blue-900/20 rounded-full text-blue-200 dark:text-blue-800">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5S19.832 5.477 21 6.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                         </svg>
                     </div>
                     <div>
-                        <h2 class="text-2xl font-bold text-gray-800">Pronto para começar?</h2>
-                        <p class="text-gray-400 max-w-sm mx-auto mt-2">Use os filtros ao lado para encontrar uma questão e testar seus conhecimentos.</p>
+                        <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100">Pronto para começar?</h2>
+                        <p class="text-gray-400 dark:text-gray-500 max-w-sm mx-auto mt-2">Use os filtros ao lado para encontrar uma questão e testar seus conhecimentos.</p>
                     </div>
                 </div>
 
@@ -202,45 +215,45 @@
                 <div id="result-container" class="hidden flex-grow flex flex-col">
                     
                     <!-- Top Bar da Questão -->
-                    <div class="p-6 bg-gray-50 border-b flex flex-wrap gap-4 justify-between items-center">
+                    <div class="p-6 bg-gray-50 dark:bg-gray-900/50 border-b dark:border-gray-700 flex flex-wrap gap-4 justify-between items-center">
                         <div class="flex items-center gap-3">
-                            <span class="bg-blue-600 text-white text-xs font-black px-3 py-1.5 rounded-lg uppercase tracking-wider">Questão <span id="question-index"></span></span>
-                            <span class="text-gray-400">|</span>
-                            <span class="text-gray-700 font-bold" id="question-area"></span>
+                            <span class="bg-blue-600 dark:bg-blue-500 text-white text-xs font-black px-3 py-1.5 rounded-lg uppercase tracking-wider">Questão <span id="question-index"></span></span>
+                            <span class="text-gray-400 dark:text-gray-600">|</span>
+                            <span class="text-gray-700 dark:text-gray-300 font-bold" id="question-area"></span>
                         </div>
-                        <div class="flex items-center gap-2 text-sm text-gray-500 font-medium">
+                        <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 font-medium">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
-                            ENEM <span id="question-year" class="font-bold text-gray-800"></span>
+                            ENEM <span id="question-year" class="font-bold text-gray-800 dark:text-gray-100"></span>
                         </div>
                     </div>
 
                     <div class="p-6 sm:p-10 space-y-8">
                         <!-- Contexto -->
-                        <div id="question-context" class="prose prose-blue max-w-none text-gray-700 leading-relaxed text-lg"></div>
+                        <div id="question-context" class="prose prose-blue dark:prose-invert max-w-none text-gray-700 dark:text-gray-300 leading-relaxed text-lg"></div>
 
                         <!-- Enunciado -->
                         <div id="question-enunciado-div" class="hidden">
-                            <p id="question-enunciado-content" class="text-gray-900 text-xl leading-snug"></p>
+                            <p id="question-enunciado-content" class="text-gray-900 dark:text-white font-bold text-xl leading-snug"></p>
                         </div>
 
                         <!-- Alternativas -->
                         <div class="space-y-4">
-                            <h3 class="text-xs font-black text-gray-400 uppercase tracking-[0.2em] mb-4">Escolha uma alternativa:</h3>
+                            <h3 class="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-4">Escolha uma alternativa:</h3>
                             <div id="options-list" class="grid grid-cols-1 gap-3"></div>
                         </div>
                     </div>
 
                     <!-- Footer da Questão -->
-                    <div class="p-6 bg-gray-50 border-t mt-auto flex items-center justify-between">
-                        <div id="save-status" class="text-sm font-bold text-emerald-600 opacity-0 transition-opacity flex items-center gap-2">
+                    <div class="p-6 bg-gray-50 dark:bg-gray-900/50 border-t dark:border-gray-700 mt-auto flex items-center justify-between">
+                        <div id="save-status" class="text-sm font-bold text-emerald-600 dark:text-emerald-400 opacity-0 transition-opacity flex items-center gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                             </svg>
                             Resultado registrado!
                         </div>
-                        <p class="text-xs text-gray-400">Fonte: api.enem.dev</p>
+                        <p class="text-xs text-gray-400 dark:text-gray-500">Fonte: api.enem.dev</p>
                     </div>
                 </div>
             </main>

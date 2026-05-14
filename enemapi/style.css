@@ -8,6 +8,11 @@
     animation: spin 1s linear infinite;
 }
 
+.dark .spinner {
+    border: 4px solid rgba(255, 255, 255, .1);
+    border-left-color: #60a5fa; /* azul-400 */
+}
+
 @keyframes spin {
     to {
         transform: rotate(360deg);
