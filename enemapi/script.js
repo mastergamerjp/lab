@@ -45,23 +45,23 @@ const statsTotal = document.getElementById('stats-total');
 const statsCorrect = document.getElementById('stats-correct');
 const statsIncorrect = document.getElementById('stats-incorrect');
 
-// Theme Toggle
-const themeToggleBtn = document.getElementById('theme-toggle');
-const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
-const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
-
 // --- Helper Functions ---
 
 /**
  * Initializes the theme based on localStorage or system preferences.
  */
 function initTheme() {
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
     if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
         document.documentElement.classList.add('dark');
-        themeToggleLightIcon.classList.remove('hidden');
+        if (themeToggleLightIcon) themeToggleLightIcon.classList.remove('hidden');
+        if (themeToggleDarkIcon) themeToggleDarkIcon.classList.add('hidden');
     } else {
         document.documentElement.classList.remove('dark');
-        themeToggleDarkIcon.classList.remove('hidden');
+        if (themeToggleDarkIcon) themeToggleDarkIcon.classList.remove('hidden');
+        if (themeToggleLightIcon) themeToggleLightIcon.classList.add('hidden');
     }
 }
 
@@ -69,9 +69,14 @@ function initTheme() {
  * Toggles the theme between light and dark.
  */
 function toggleTheme() {
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
     // toggle icons inside button
-    themeToggleDarkIcon.classList.toggle('hidden');
-    themeToggleLightIcon.classList.toggle('hidden');
+    if (themeToggleDarkIcon && themeToggleLightIcon) {
+        themeToggleDarkIcon.classList.toggle('hidden');
+        themeToggleLightIcon.classList.toggle('hidden');
+    }
 
     // if set via local storage previously
     if (localStorage.getItem('color-theme')) {
@@ -381,7 +386,10 @@ function init() {
     updateStats();
     setupStatsAccordion();
 
-    themeToggleBtn.addEventListener('click', toggleTheme);
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', toggleTheme);
+    }
 
     randomBtn.addEventListener('click', async () => {
         let year = yearSelect.value;
