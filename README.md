@@ -15,6 +15,16 @@ An interactive web application designed to help Brazilian students study for the
     - **Native Integration:** Built with Vanilla JS and Tailwind CSS for a lightweight, responsive experience.
 - **API:** Powered by the community-driven [enem.dev API](https://enem.dev).
 
+### 2. MathGen - Treino de Cálculo e Álgebra
+An interactive training tool designed to help students practice calculus and algebra through procedurally generated problems.
+
+- **Purpose:** Provide a lightweight, focused environment for repetitive practice of mathematical operations.
+- **Key Features:**
+    - **Procedural Generation:** Dynamically generates problems, ensuring a fresh challenge every time (e.g., polynomial derivatives).
+    - **High-Quality Rendering:** Uses KaTeX for professional-grade mathematical notation.
+    - **Interactive Practice:** Built with React to provide immediate feedback and a smooth user experience.
+    - **Modern Aesthetics:** Styled with Tailwind CSS and Phosphor Icons for a clean, distraction-free interface.
+
 ---
 
 ## ⏳ Pending Ideas
