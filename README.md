@@ -25,6 +25,17 @@ An interactive training tool designed to help students practice calculus and alg
     - **Interactive Practice:** Built with React to provide immediate feedback and a smooth user experience.
     - **Modern Aesthetics:** Styled with Tailwind CSS and Phosphor Icons for a clean, distraction-free interface.
 
+### 3. Banco Imobiliário - Maquininha Digital
+Digital credit card machine for Monopoly-style board games, replacing physical money with a fast web interface.
+
+- **Purpose:** Simplify money management during board games with digital transactions and persistence.
+- **Key Features:**
+    - **Player Management:** Create cards with custom names and colors.
+    - **Digital Transactions:** Easy "Receive" and "Pay" buttons, plus direct transfers between players.
+    - **Data Persistence:** Automatically saves game state to `localStorage`.
+    - **Responsive Design:** Optimized for mobile devices to be used at the table.
+    - **Dark Mode:** Support for both light and dark themes.
+
 ---
 
 ## ⏳ Pending Ideas
