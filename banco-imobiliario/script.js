@@ -74,6 +74,7 @@ function setupEventListeners() {
     resetAllBtn.addEventListener('click', () => {
         if (confirm('Tem certeza que deseja resetar todos os jogadores e saldos?')) {
             players = [];
+            transactions = [];
             saveAndRender();
         }
     });
@@ -130,17 +131,25 @@ function transfer(fromId, toId, amount) {
     if (fromPlayer && toPlayer && fromPlayer.balance >= amount) {
         fromPlayer.balance -= amount;
         toPlayer.balance += amount;
-        addTransaction('TRANSFER', fromId, toId, amount, `Transferiu ${formatValue(amount)} para ${toPlayer.name}`);
+        addTransaction('TRANSFER', fromId, toId, amount, `${fromPlayer.name} transferiu ${formatValue(amount)} para ${toPlayer.name}`);
         return true;
     }
     return false;
+}
+
+function resetBalances() {
+    if (confirm('Resetar o saldo de TODOS os jogadores para o valor inicial?')) {
+        players.forEach(p => p.balance = initialBalance);
+        transactions = [];
+        saveAndRender();
+    }
 }
 
 function formatValue(value) {
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value).replace('R$', '₩');
 }
 
-// Update addTransaction to accept oldBalance for EDIT
+// --- History Actions ---
 function addTransaction(type, fromId, toId, amount, description, oldBalance = null) {
     const transaction = {
         id: Date.now().toString() + Math.random().toString(36).substr(2, 5),
@@ -174,7 +183,7 @@ function rollbackTransaction(transactionId) {
         if (player) {
             if (t.type === 'RECEIVE') player.balance -= t.amount;
             if (t.type === 'PAY') player.balance += Math.abs(t.amount);
-            if (t.type === 'EDIT') player.balance = t.oldBalance; // Need to store oldBalance for EDIT
+            if (t.type === 'EDIT') player.balance = t.oldBalance;
         }
     }
     
@@ -385,6 +394,19 @@ window.openTransferModal = (id) => {
             </div>
         </div>
     `);
+};
+
+window.confirmTransfer = (fromId) => {
+    const toId = document.getElementById('modal-to-id').value;
+    const amount = parseInt(document.getElementById('modal-amount').value);
+    
+    if (amount > 0) {
+        if (transfer(fromId, toId, amount)) {
+            closeModal();
+        } else {
+            alert('Saldo insuficiente!');
+        }
+    }
 };
 
 window.openHistoryModal = () => {
